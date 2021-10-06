@@ -26,6 +26,7 @@ import string
 
 from Sastrawi.StopWordRemover.StopWordRemoverFactory import StopWordRemoverFactory
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
+import hashlib
 
 from flask import flash, g, redirect
 from flask_appbuilder import expose, SimpleFormView
@@ -221,33 +222,47 @@ class CsvToDatabaseView(SimpleFormView):
                 )
             )
 
-            # Logging apabila proses dijalankan di file ini
-            app.logger.info("Dijalankan dari views.py")
+            
 
-            # Mengambil tipe data dan kolom pada dataframe
-            dfType = dict(df.dtypes)
+            if form.preprocessing.data:
 
-            # Looping tipe data dan kolom dataframe
-            for key,val in dfType.items():
-                if val == np.object:
-                    # Pre Processing untuk text dijalankan disini
+                # Logging apabila proses dijalankan di file ini
+                app.logger.info("Dijalankan dari views.py")
 
-                    # Transformasi lowercase
-                    df[key] = df[key].str.lower()
+                # Mengambil tipe data dan kolom pada dataframe
+                dfType = dict(df.dtypes)
 
-                    # Melakukan penghapusan punctuation
-                    df[key] = df[key].apply(remove_punctuation)
+                # Looping tipe data dan kolom dataframe
+                for key,val in dfType.items():
+                    if val == np.object:
+                        # Pre Processing untuk text dijalankan disini
 
-                    # Melakukan penghapusan stopwords
-                    df[key] = df[key].apply(remove_stopword)
+                        # Transformasi lowercase
+                        df[key] = df[key].str.lower()
 
-                    # Melakukan stemming
-                    df[key] = df[key].apply(stemming_word)
+                        # Melakukan penghapusan punctuation
+                        df[key] = df[key].apply(remove_punctuation)
 
-                else:
-                    # Jika data tidak berupa string / object
-                    app.logger.info("Ini bertipe data integer / float")
+                        # Melakukan penghapusan stopwords
+                        df[key] = df[key].apply(remove_stopword)
 
+                        # Melakukan stemming
+                        df[key] = df[key].apply(stemming_word)
+
+                       
+
+
+                    else:
+                        # Jika data tidak berupa string / object
+                        app.logger.info("Ini bertipe data integer / float")
+
+            if form.hashcolumn.data:
+                keys = form.hashcolumn.data.split(",")
+                for key in keys:
+                    try:
+                        df[key] = df[key].apply(lambda x: hashlib.sha256(x.encode()).hexdigest())
+                    except Exception as e:
+                        app.logger.info("ERROR Saat hash : "+str(e))
 
             database = (
                 db.session.query(models.Database)

@@ -237,6 +237,16 @@ class CsvToDatabaseForm(DynamicForm):
             'Use [""] for empty string.'
         ),
     )
+    preprocessing = BooleanField(
+        _("Lakukan Preprocessing"),
+        description=_('Text Preprocessing'),
+    )
+    hashcolumn = StringField(
+        _("Hash Kolom"),
+        description=_("Choose column to be Hash"),
+        validators=[Optional()],
+        widget=BS3TextFieldWidget(),
+    )
 
 
 class ExcelToDatabaseForm(DynamicForm):
