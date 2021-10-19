@@ -17,8 +17,17 @@
 
 STD_COLUMNS = ["id_pasien", "nama_pasien", "keluhan", "diagnosis", "obat", "id_dokter"]
 
-def check_std_columns(df):
+def check_std_columns2(df):
     if len(df.columns) == len(STD_COLUMNS):
         return True
     else:
         return False
+
+def check_std_columns(df):
+    cols = []
+    cl = df.columns
+    for c in STD_COLUMNS:
+        if c not in cl:
+            cols.append(c)
+
+    return cols

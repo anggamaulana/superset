@@ -180,13 +180,10 @@ class CsvToDatabaseView(SimpleFormView):
                 )
             )
 
-            # Checking if the file uploaded have the same column(s) as the standard column(s)
-            if str_columns.check_std_columns(df):
-                # If the file uploaded have the same column(s) as the standard column(s)
-                pass
-            else:
-                # If the file uploaded don't have the same column(s) as the standard column(s)
-                raise Exception("Column(s) inside the file doesn't match the standard column(s) that has been set. Please rename your file column(s) and try again.")
+            # Checking if the file uploaded have the the standard column(s)
+            lack_columns = str_columns.check_std_columns(df)
+            if len(lack_columns) > 0:
+                raise Exception("Mohon perbaiki standar file, ada kolom yang tidak tersedia yaitu {}".format(", ".join(lack_columns)))
 
             # Pre Processing Form
             if form.pre_process.data == True:
