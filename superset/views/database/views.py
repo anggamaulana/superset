@@ -181,9 +181,9 @@ class CsvToDatabaseView(SimpleFormView):
             )
 
             # Checking if the file uploaded have the the standard column(s)
-            lack_columns = str_columns.check_std_columns(df)
-            if len(lack_columns) > 0:
-                raise Exception("Mohon perbaiki standar file, ada kolom yang tidak tersedia yaitu {}".format(", ".join(lack_columns)))
+            # lack_columns = str_columns.check_std_columns(df)
+            # if len(lack_columns) > 0:
+            #     raise Exception("Mohon perbaiki standar file, ada kolom yang tidak tersedia yaitu {}".format(", ".join(lack_columns)))
 
             # Pre Processing Form
             if form.pre_process.data == True:
